@@ -1,0 +1,64 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "me.huaisu.android_live"
+        minSdkVersion 15
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation project(':pcm_audio_recorder')
+    implementation project(':audio_encoder')
+}
+
+task ad(dependsOn: 'assembleDebug') {
+    doLast {
+        copyApk()
+    }
+}
+
+task ar(dependsOn: 'assembleRelease') {
+    doLast {
+        copyApk()
+    }
+}
+def copyApk() {
+    def tmp = project.gradle.startParameter.taskNames
+    if (tmp.contains("ad") || tmp.contains("ar")) {
+        copy {
+            def fileNamePrefix
+            def newFileNamePrefix
+            def dirName
+            if (tmp.contains("ar")) {
+                newFileNamePrefix = "release"
+                fileNamePrefix = "${project.name}-${newFileNamePrefix}"
+                dirName = "release"
+            } else {
+                newFileNamePrefix = "debug"
+                fileNamePrefix = "${project.name}-${newFileNamePrefix}"
+                dirName = "debug"
+            }
+            def destPath = projectDir.getParent()
+            from "${buildDir}/outputs/apk/${dirName}/${fileNamePrefix}.apk"
+            into destPath
+            rename { String fileName ->
+                fileName.replace(fileNamePrefix, "${newFileNamePrefix}")
+            }
+        }
+    }
+}
+

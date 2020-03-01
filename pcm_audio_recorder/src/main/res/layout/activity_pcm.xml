@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="采集"/>
+
+    <Button
+        android:id="@+id/btn_record_pcm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始录制pcm"
+        android:onClick="recordPCM"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="编辑"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_half_volume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="音量减半"
+            android:onClick="halfVolume"/>
+
+        <Button
+            android:id="@+id/btn_split_channel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="分离左右声道"
+            android:onClick="splitChannel"/>
+
+        <Button
+            android:id="@+id/btn_double_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="速度提升一倍"
+            android:onClick="doubleSpeed"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="播放"/>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_play_pcm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="播放原始pcm"
+                android:onClick="playPCM"/>
+
+            <Button
+                android:id="@+id/btn_play_half_pcm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="播放音量减半pcm"
+                android:onClick="playHalfPCM"/>
+
+            <Button
+                android:id="@+id/btn_play_left_channel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="播放左声道"
+                android:onClick="playLeftChannelPCM"/>
+
+            <Button
+                android:id="@+id/btn_play_right_channel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="播放右声道"
+                android:onClick="playRightChannelPCM"/>
+
+            <Button
+                android:id="@+id/btn_play_double"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="倍速播放"
+                android:onClick="playDoubleSpeedPCM"/>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+</LinearLayout>
