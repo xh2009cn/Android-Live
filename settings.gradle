@@ -3,5 +3,6 @@ include ':app'
 include ':common'
 include ':pcm_audio_recorder'
 include ':audio_encoder'
+include ':image_knowledge'
 
 

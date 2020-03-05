@@ -24,6 +24,13 @@
             android:text="PCM转AAC编码"
             android:onClick="encodePcmToAac"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="图像知识"
+            android:onClick="imageKnowledge"/>
+
     </LinearLayout>
 
 

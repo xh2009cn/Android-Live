@@ -6,7 +6,7 @@ import me.huaisu.common.App;
 
 public class LogUtils {
 
-    private static final String TAG = "AndroidSimpleMediaTest";
+    private static final String TAG = "AndroidLive";
 
     public static void i(String log) {
         Log.i(TAG, log);

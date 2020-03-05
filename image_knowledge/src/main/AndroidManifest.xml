@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="me.huaisu.image_knowledge" >
+
+    <application>
+        <activity android:name=".YUVOperationActivity" />
+        <activity android:name=".ImageKnowledgeActivity" />
+        <activity android:name=".ImageCompressActivity" />
+    </application>
+</manifest>

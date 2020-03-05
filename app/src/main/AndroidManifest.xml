@@ -3,6 +3,7 @@
     package="me.huaisu.android_live">
 
     <application
+        android:name="me.huaisu.common.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

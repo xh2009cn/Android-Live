@@ -7,6 +7,8 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import me.huaisu.audio.encode.AacEncodeActivity;
+import me.huaisu.image_knowledge.ImageKnowledgeActivity;
+import me.huaisu.image_knowledge.YUVOperationActivity;
 import me.huaisu.pcm_audio_recorder.PCMEditActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,5 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void encodePcmToAac(View view) {
         startActivity(new Intent(this, AacEncodeActivity.class));
+    }
+
+    public void imageKnowledge(View view) {
+        startActivity(new Intent(this, ImageKnowledgeActivity.class));
     }
 }
