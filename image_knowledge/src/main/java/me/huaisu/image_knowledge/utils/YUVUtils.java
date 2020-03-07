@@ -1,10 +1,8 @@
 package me.huaisu.image_knowledge.utils;
 
 import android.graphics.Bitmap;
-import android.widget.ImageView;
 
 
-import me.huaisu.common.utils.LogUtils;
 import me.huaisu.common.utils.NumberUtils;
 
 public class YUVUtils {
@@ -75,6 +73,13 @@ public class YUVUtils {
         }
         int offset = frame + frame / 4;
         for (int i = offset; i < len; i++) {
+            yuv420p[i] = Byte.MIN_VALUE;
+        }
+    }
+
+    public static void filterV(byte[] yuv420p, int w, int h) {
+        int frame = w * h;
+        for (int i = 0; i < frame + frame / 4; i++) {
             yuv420p[i] = Byte.MIN_VALUE;
         }
     }

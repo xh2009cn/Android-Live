@@ -16,31 +16,28 @@ public class ImageCompressUtils {
             72,  92,  95,  98, 112, 100, 103,  99
     };
 
-    public static float[] quantization(float[] block) {
+    public static double[] quantization(double[] block) {
         int len = block.length;
-        float[] quantizationBlock = new float[len];
+        double[] quantizationBlock = new double[len];
         for (int i = 0; i < len; i++) {
             quantizationBlock[i] = Math.round(block[i] / QUANTIZATION_MATRIX[i]) * QUANTIZATION_MATRIX[i];
         }
         return quantizationBlock;
     }
 
-    /**
-     * 将图片分割成一个个8x8的方块
-     */
-    public static int[][] splitToBlocks(int[] data, int N) {
+    public static byte[][] splitToBlocks(byte[] data, int N) {
         int len = N * N;
         int blockCountBySide = N / BLOCK_SIZE;
-        int[][] blocks = new int[len / BLOCK_DATA_SIZE][];
+        byte[][] blocks = new byte[len / BLOCK_DATA_SIZE][];
         // 每次按顺序copy 8个字节
         for (int i = 0; i < len; i += BLOCK_SIZE) {
             int row = i / N;
             int rowInBlock = row / BLOCK_SIZE;
             int columnInBlock = (i / BLOCK_SIZE) % blockCountBySide;
             int blockIndex = rowInBlock * blockCountBySide + columnInBlock;
-            int[] block = blocks[blockIndex];
+            byte[] block = blocks[blockIndex];
             if (block == null) {
-                block = new int[BLOCK_DATA_SIZE];
+                block = new byte[BLOCK_DATA_SIZE];
                 blocks[blockIndex] = block;
             }
             int rowOfBlock = row % BLOCK_SIZE;
@@ -49,8 +46,8 @@ public class ImageCompressUtils {
         return blocks;
     }
 
-    public static float[] concatBlocks(float[][] blocks, int N) {
-        float[] data = new float[N * N];
+    public static double[] concatBlocks(double[][] blocks, int N) {
+        double[] data = new double[N * N];
         int len = N * N;
         int blockCountBySide = N / BLOCK_SIZE;
         // 每次按顺序copy 8个字节
@@ -59,15 +56,15 @@ public class ImageCompressUtils {
             int rowInBlock = row / BLOCK_SIZE;
             int columnInBlock = (i / BLOCK_SIZE) % blockCountBySide;
             int blockIndex = rowInBlock * blockCountBySide + columnInBlock;
-            float[] block = blocks[blockIndex];
+            double[] block = blocks[blockIndex];
             int rowOfBlock = row % BLOCK_SIZE;
             System.arraycopy(block, rowOfBlock * BLOCK_SIZE,  data, i, BLOCK_SIZE);
         }
         return data;
     }
 
-    public static int[] concatBlocks(int[][] blocks, int N) {
-        int[] data = new int[N * N];
+    public static byte[] concatBlocks(byte[][] blocks, int N) {
+        byte[] data = new byte[N * N];
         int len = N * N;
         int blockCountBySide = N / BLOCK_SIZE;
         // 每次按顺序copy 8个字节
@@ -76,7 +73,7 @@ public class ImageCompressUtils {
             int rowInBlock = row / BLOCK_SIZE;
             int columnInBlock = (i / BLOCK_SIZE) % blockCountBySide;
             int blockIndex = rowInBlock * blockCountBySide + columnInBlock;
-            int[] block = blocks[blockIndex];
+            byte[] block = blocks[blockIndex];
             int rowOfBlock = row % BLOCK_SIZE;
             System.arraycopy(block, rowOfBlock * BLOCK_SIZE,  data, i, BLOCK_SIZE);
         }

@@ -6,6 +6,10 @@ public class NumberUtils {
         return (byte) (i & 0xFF);
     }
 
+    public static byte doubleToByte(double i) {
+        return (byte) ((int)i & 0xFF);
+    }
+
     public static int byteToInt(byte b) {
         return b & 0xFF;
     }

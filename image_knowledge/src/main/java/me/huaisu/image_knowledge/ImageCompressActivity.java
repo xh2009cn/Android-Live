@@ -9,21 +9,24 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.apache.commons.math3.linear.RealMatrix;
+
 import me.huaisu.common.utils.FileUtils;
 import me.huaisu.common.utils.IOUtils;
-import me.huaisu.image_knowledge.utils.DCT2Transformer;
-import me.huaisu.image_knowledge.utils.IDCT2Transformer;
+import me.huaisu.common.utils.MatrixUtils;
+import me.huaisu.image_knowledge.utils.DCTUtils;
 import me.huaisu.image_knowledge.utils.ImageCompressUtils;
 import me.huaisu.image_knowledge.utils.YUVUtils;
 
 public class ImageCompressActivity extends AppCompatActivity {
 
     ImageView ivOrigin, ivDCT, ivIDCT, ivBlockDct,ivBlockIdct, ivQuantization;
-    private static int N = 128;
+    private static int N = 256;
     private static int BLOCK_SIZE = 8;
-    float[] singleDCT;
-    float[][] dctBlocks;
-    float[][] quantizationBlocks;
+    byte[] yuv;
+    RealMatrix singleDCT;
+    double[][] dctBlocks;
+    double[][] quantizationBlocks;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,8 +39,7 @@ public class ImageCompressActivity extends AppCompatActivity {
         ivBlockDct = findViewById(R.id.iv_dct_block_transform);
         ivBlockIdct = findViewById(R.id.iv_idct_block_transform);
 
-        byte[] yuv = FileUtils.openRawResources(R.raw.lena_128x128_yuv420p);
-        Bitmap bitmap = YUVUtils.yToBitmap(yuv, N, N);
+        Bitmap bitmap = YUVUtils.yToBitmap(getYUV(), N, N);
         ivOrigin.setImageBitmap(bitmap);
     }
 
@@ -45,9 +47,8 @@ public class ImageCompressActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final int[] yuv = FileUtils.openRawResource(R.raw.lena_128x128_yuv420p);
-                singleDCT = DCT2Transformer.transform(yuv, N);
-                final Bitmap bitmap = YUVUtils.yToBitmap(IOUtils.toByteArray(singleDCT), N, N);
+                singleDCT = DCTUtils.dct2(getYUV(), N);
+                final Bitmap bitmap = YUVUtils.yToBitmap(MatrixUtils.getMatrixByteData(singleDCT), N, N);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -58,6 +59,13 @@ public class ImageCompressActivity extends AppCompatActivity {
         }).start();
     }
 
+    private byte[] getYUV() {
+        if (yuv == null) {
+            yuv = FileUtils.openRawResources(R.raw.lena_256x256_yuv420p_gray);
+        }
+        return yuv;
+    }
+
     public void idctTransform(View view) {
         if (singleDCT == null) {
             Toast.makeText(this, "请先做DCT变换", Toast.LENGTH_SHORT).show();
@@ -66,8 +74,8 @@ public class ImageCompressActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int[] idct = IDCT2Transformer.transform(singleDCT, N);
-                final Bitmap bitmap = YUVUtils.yToBitmap(IOUtils.toByteArray(idct), N, N);
+                RealMatrix signalMatrix = DCTUtils.idct2(singleDCT, N);
+                final Bitmap bitmap = YUVUtils.yToBitmap(MatrixUtils.getMatrixByteData(signalMatrix), N, N);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -82,16 +90,16 @@ public class ImageCompressActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final int[] yuv = FileUtils.openRawResource(R.raw.lena_128x128_yuv420p);
                 // 先将图片分成一个个8x8的小块
-                int[][] blocks = ImageCompressUtils.splitToBlocks(yuv, N);
+                byte[][] blocks = ImageCompressUtils.splitToBlocks(getYUV(), N);
                 // 依次对每个分块做DCT变换
-                dctBlocks = new float[blocks.length][];
+                dctBlocks = new double[blocks.length][];
                 for (int i = 0; i < blocks.length; i++) {
-                    dctBlocks[i] = DCT2Transformer.transform(blocks[i], BLOCK_SIZE);
+                    RealMatrix dctMatrix = DCTUtils.dct2(blocks[i], BLOCK_SIZE);
+                    dctBlocks[i] = MatrixUtils.getMatrixDoubleData(dctMatrix);
                 }
                 // 将DCT变换之后的分块合并，转成bitmap展示出来
-                float[] dctData = ImageCompressUtils.concatBlocks(dctBlocks, N);
+                double[] dctData = ImageCompressUtils.concatBlocks(dctBlocks, N);
                 final Bitmap bitmap = YUVUtils.yToBitmap(IOUtils.toByteArray(dctData), N, N);
                 runOnUiThread(new Runnable() {
                     @Override
@@ -112,13 +120,13 @@ public class ImageCompressActivity extends AppCompatActivity {
             @Override
             public void run() {
                 int len = dctBlocks.length;
-                quantizationBlocks = new float[len][];
+                quantizationBlocks = new double[len][];
                 for (int i = 0; i < len; i++) {
-                    float[] dct = dctBlocks[i];
-                    float[] quantizationBlock = ImageCompressUtils.quantization(dct);
+                    double[] dct = dctBlocks[i];
+                    double[] quantizationBlock = ImageCompressUtils.quantization(dct);
                     quantizationBlocks[i] = quantizationBlock;
                 }
-                float[] quantizationData = ImageCompressUtils.concatBlocks(quantizationBlocks, N);
+                double[] quantizationData = ImageCompressUtils.concatBlocks(quantizationBlocks, N);
                 final Bitmap bitmap = YUVUtils.yToBitmap(IOUtils.toByteArray(quantizationData), N, N);
                 runOnUiThread(new Runnable() {
                     @Override
@@ -131,7 +139,7 @@ public class ImageCompressActivity extends AppCompatActivity {
     }
 
     public void idctBlockTransform(View view) {
-        final float[][] blocks = quantizationBlocks != null ? quantizationBlocks : dctBlocks;
+        final double[][] blocks = quantizationBlocks != null ? quantizationBlocks : dctBlocks;
         if (blocks == null) {
             Toast.makeText(this, "请先做分块DCT变换", Toast.LENGTH_SHORT).show();
             return;
@@ -141,15 +149,16 @@ public class ImageCompressActivity extends AppCompatActivity {
             public void run() {
                 // 依次将每个8x8的分块做DCT反变换
                 int len = blocks.length;
-                int[][] idctBlocks = new int[len][];
+                byte[][] idctBlocks = new byte[len][];
                 for (int i = 0; i < len; i++) {
-                    float[] dct = blocks[i];
-                    int[] idctBlock = IDCT2Transformer.transform(dct, BLOCK_SIZE);
+                    double[] dct = blocks[i];
+                    RealMatrix signalMatrix = DCTUtils.idct2(MatrixUtils.toMatrix(dct, BLOCK_SIZE), BLOCK_SIZE);
+                    byte[] idctBlock = MatrixUtils.getMatrixByteData(signalMatrix);
                     idctBlocks[i] = idctBlock;
                 }
                 // 将反变换的分块合并，展示出来
-                int[] idctData = ImageCompressUtils.concatBlocks(idctBlocks, N);
-                final Bitmap bitmap = YUVUtils.yToBitmap(IOUtils.toByteArray(idctData), N, N);
+                byte[] idctData = ImageCompressUtils.concatBlocks(idctBlocks, N);
+                final Bitmap bitmap = YUVUtils.yToBitmap(idctData, N, N);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

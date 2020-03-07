@@ -41,4 +41,13 @@ public class IOUtils {
         }
         return byteArray;
     }
+
+    public static byte[] toByteArray(double[] data) {
+        int len = data.length;
+        byte[] byteArray = new byte[len];
+        for (int i = 0; i < len; i++) {
+            byteArray[i] = (byte) ((int) data[i] & 0xFF);
+        }
+        return byteArray;
+    }
 }

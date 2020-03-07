@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/iv_origin"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
             android:scaleType="fitXY" />
 
         <Button
@@ -28,8 +28,8 @@
 
         <ImageView
             android:id="@+id/iv_dct_transform"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
             android:scaleType="fitXY" />
 
         <Button
@@ -40,8 +40,8 @@
 
         <ImageView
             android:id="@+id/iv_idct"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
             android:scaleType="fitXY" />
 
         <Button
@@ -52,8 +52,8 @@
 
         <ImageView
             android:id="@+id/iv_dct_block_transform"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
             android:scaleType="fitXY" />
         <Button
             android:layout_width="wrap_content"
@@ -63,8 +63,8 @@
 
         <ImageView
             android:id="@+id/iv_quantization"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
             android:scaleType="fitXY" />
 
         <Button
@@ -75,8 +75,8 @@
 
         <ImageView
             android:id="@+id/iv_idct_block_transform"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
             android:scaleType="fitXY" />
 
     </LinearLayout>
